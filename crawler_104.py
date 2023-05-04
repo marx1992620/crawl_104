@@ -87,9 +87,9 @@ def crawl_content(url,headers):
 
     tt = times_Queue.get() # 從times Queue獲取編號 依序新增row資料
     df.loc[tt] = [company, job_name, job_content, job_exp, job_require, job_welfare, job_contact, url] + c
-    time.sleep(random.randint(3,5)) # 每爬完一頁休息3~5秒
-    df.to_csv(r'./output/crawl_104.csv', index=0,encoding='utf-8-sig') # 轉成CSV檔
-    df.to_excel(r'./output/crawl_104.xlsx', engine='xlsxwriter') # 轉成xlsx檔
+    time.sleep(random.randint(3,5)) # 每爬完一頁休息3-5秒
+    df.to_csv(os.path.join('output',fr'{config["output_filename"]}.csv'), index=0, encoding='utf-8-sig') # 存CSV
+    df.to_excel(os.path.join('output',fr'{config["output_filename"]}.xlsx'), engine='xlsxwriter') # 存xlsx
 
 def crawl_thread():
     while pages_Queue.empty() is False:
@@ -121,7 +121,7 @@ class thread_class(threading.Thread): # python繼承
 if __name__ == '__main__':
     tStart = time.time() # 起始時間
     setting()
-    print("start crawling url")
+    print("start crawling 104 website")
     crawl_url()
     print("start crawling content")
     crawl_thread()
