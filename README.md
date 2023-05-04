@@ -12,7 +12,7 @@
 
 2.	synonym_dic = 比對相關技能的同義字（例如AI=artificial intelligence=人工智慧，則寫成"AI": ["artificial intelligence","人工智慧"]），且英文以小寫做比對，不同技能需換行輸入。
 
-3.	output_filename = 設定的檔案名稱。
+3.	output_filename = 設定輸出的檔案名稱。
 
 4.	以上設定完後，執行 crawl_104.py，等到出現 Processes all done. 代表資料抓取完畢。
 
