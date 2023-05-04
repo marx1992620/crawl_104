@@ -128,3 +128,5 @@ if __name__ == '__main__':
     tEnd = time.time() # 結束時間
     print('Cost %d seconds' % (tEnd - tStart)) # 完成花費時間
     print(f"crawled total jobs: {times_Queue.get()}")
+    print("Processes all done.")
+    wait = input()
