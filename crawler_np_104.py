@@ -8,20 +8,26 @@ import threading
 from bs4 import BeautifulSoup
 from queue import Queue
 # from multiprocessing.dummy import Pool
-# import numpy as np
-# import xlsxwriter
-# import re
+import numpy as np
+import openpyxl
 
 config = {}
-df = ""
+data_np = ""
 url_Queue = Queue()
 pages_Queue = Queue()
 headers_Queue = Queue()
 times_Queue = Queue()
-
+# 建立 Excel 活頁簿
+wb = openpyxl.Workbook()
+# 取得作用中的工作表
+ws = wb.active
+# # 設定工作表名稱
+ws.title = "104_jobs"
+area_dic = {"台北市":"6001001000","新北市":"6001002000","宜蘭縣":"6001003000","基隆市":"6001004000","桃園市":"6001005000","新竹縣市":"6001006000","苗栗縣":"6001007000","台中市":"6001008000","彰化縣":"6001010000","南投縣":"6001011000","雲林縣":"6001012000","嘉義縣市":"6001013000","台南市":"6001014000","高雄市":"6001016000","屏東縣":"6001018000","台東縣":"6001019000","花蓮縣":"6001020000","澎湖縣":"6001021000","金門縣":"6001022000","連江縣":"6001023000"}
+keyword, area_code = "",""
 
 def setting():
-    global df,config
+    global data_np, config, keyword, area_code
     if not os.path.exists('./output'):
         os.mkdir('./output')
 
@@ -47,33 +53,53 @@ def setting():
         if skill_column not in config["job_skills"]:
             config["job_skills"].append(skill_column)
 
-    df = pd.DataFrame(columns=['company', 'job_name', 'job_content', 'job_exp', 'job_require', 'job_welfare',
-                            'job_contact', 'URL'] + config["job_skills"])
+    keyword, area = config["job_keyword"], config["job_area"] # 搜尋相關職缺 地點
+    area_code = ""
+    if len(area) > 0 and type(area) == type(list()):
+        for a in area:
+            if area_dic[a]:
+                if len(area_code)>0:
+                    area_code += "%2C"+area_dic[a]
+                else:
+                    area_code += area_dic[a]
+    if len(area_code) > 0:
+        area_code = "&" + area_code
+
+    # df = pd.DataFrame(columns=['company', 'job_name', 'job_content', 'job_exp', 'job_require', 'job_welfare',
+    #                         'job_contact', 'URL'] + config["job_skills"])
+    # 建立 NumPy 陣列
+    data_np = np.array([['company', 'job_name', 'job_area', 'job_content', 'job_exp', 'job_require', 'job_welfare', 'job_contact', 'URL'] + config["job_skills"]])
 
 def crawl_url():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
-    keyword = config["job_keyword"] # 搜尋相關職缺
 
     for n in range(1, int(config["max_pages"])): # 設定爬頁數
-        url = f'https://www.104.com.tw/jobs/search/?ro=0&keyword={keyword}&order=1&asc=0&page={n}&mode=s&jobsource=2018indexpoc'
+        url = f'https://www.104.com.tw/jobs/search/?ro=0&keyword={keyword}{area_code}&order=1&asc=0&page={n}&mode=s&jobsource=2018indexpoc' # &area=6001001000%2C6001002000%2C6001005000
         res = requests.get(url, headers=headers)
         soup = BeautifulSoup(res.text, 'html.parser')
         page = soup.select('div[id="js-job-content"]')[0].select('h2[class="b-tit"] a')
         pages_Queue.put(page)
 
 def crawl_content(url,headers):
-    res = requests.get(url=url, headers=headers)
+    global data_np
+    for _ in range(2):
+        try:
+            res = requests.get(url=url, headers=headers)
+            continue
+        except:
+            time.sleep(3)
     soup = BeautifulSoup(res.text,'html.parser')
     json_data = json.loads(soup.text) # 資料轉dict格式
     job_name = json_data['data']['header']['jobName']
     company = json_data['data']['header']['custName']
+    job_area = json_data['data']['jobDetail']['addressRegion'] + json_data['data']['jobDetail']['addressDetail'] 
     job_contact = '聯絡人:' + json_data['data']['contact']['hrName'] + 'email:' + json_data['data']['contact']['email']
     job_require = "接受身分:" + "、".join([i['description'] for i in json_data['data']['condition']['acceptRole']['role']])
     job_welfare = json_data['data']['welfare']['welfare']
     job_content = json_data['data']['jobDetail']['jobDescription']
     job_exp = "工作經驗:" + json_data['data']['condition']['workExp']
     job_skills = [i['description'] for i in json_data['data']['condition']['specialty']]
-
+    job_url = url.replace("ajax/content/","")
     # 搜索所需技能
     c = [0 for _ in range(len(config["job_skills"]))]
     # times為配對技能要求次數
@@ -83,13 +109,16 @@ def crawl_content(url,headers):
             if job_skill.lower() in b:
                 c[times] = 1
             times += 1
-    print(company,job_name)
+    print(company,job_name,job_area)
 
-    tt = times_Queue.get() # 從times Queue獲取編號 依序新增row資料
-    df.loc[tt] = [company, job_name, job_content, job_exp, job_require, job_welfare, job_contact, url] + c
+    # tt = times_Queue.get() # 從times Queue獲取編號 依序新增row資料
+    # df.loc[tt] = [company, job_name, job_content, job_exp, job_require, job_welfare, job_contact, url] + c
+    row = np.array([company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + c)
+    data_np = np.vstack([data_np,row])
+
     time.sleep(random.randint(3,5)) # 每爬完一頁休息3-5秒
-    df.to_csv(os.path.join('output',fr'{config["output_filename"]}.csv'), index=0, encoding='utf-8-sig') # 存CSV
-    df.to_excel(os.path.join('output',fr'{config["output_filename"]}.xlsx'), engine='xlsxwriter') # 存xlsx
+    # df.to_csv(os.path.join('output',fr'{config["output_filename"]}.csv'), index=0, encoding='utf-8-sig') # 存CSV
+    # df.to_excel(os.path.join('output',fr'{config["output_filename"]}.xlsx'), engine='xlsxwriter') # 存xlsx
 
 def crawl_thread():
     while pages_Queue.empty() is False:
@@ -125,8 +154,15 @@ if __name__ == '__main__':
     crawl_url()
     print("start crawling content")
     crawl_thread()
+    # 將 NumPy 陣列寫入 Excel 工作表
+    for data in data_np:
+        ws.append(data.tolist())
+    # 儲存 Excel 活頁簿至檔案
+    wb.save(os.path.join('output',fr'{config["output_filename"]}.xlsx'))
+    wb.save(os.path.join('output',fr'{config["output_filename"]}.csv'))
+    # np.savetxt(os.path.join('output',fr'{config["output_filename"]}.csv'), data_np, '%s', delimiter=",", encoding='utf-8-sig')
     tEnd = time.time() # 結束時間
     print('Cost %d seconds' % (tEnd - tStart)) # 完成花費時間
-    print(f"crawled total jobs: {times_Queue.get()}")
+    print(f"crawled total jobs: {len(data_np)-1}")
     print("Processes all done.")
     wait = input()

@@ -1,9 +1,13 @@
 {
     "job_keyword": "資料分析",
 
+    "job_area": [
+                "台北市","新北市"
+                ],
+
     "job_skills": [
-        "Linux", "Python", "MySQL", "MongoDB", "R", "ETL", "Docker", "Tableau", "PowerBI", "Data Analysis", "Machine Learning", "AI", "Kafka", "Hadoop", "Spark", "Cloud"
-        ],
+                "Linux", "Python", "MySQL", "MongoDB", "R", "ETL", "Docker", "Tableau", "PowerBI", "Data Analysis", "Machine Learning", "AI", "Kafka", "Hadoop", "Spark", "Cloud"
+                ],
 
     "synonym_dic": {
                     "Linux": ["linux","unix"],
@@ -17,7 +21,7 @@
                     "Cloud": ["cloud","aws","gcp","azure","cloud service","cloud server","雲端服務","雲端運算","雲服務"]
                     },
 
-    "max_pages": 3,
+    "max_pages": 2,
 
     "output_filename": "output_104"
 }
