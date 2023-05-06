@@ -14,7 +14,7 @@
 
 3.	output_filename = 設定輸出的檔案名稱。
 
-4.	以上設定完後，執行 crawl_104.py，等到出現 Processes all done. 代表資料抓取完畢。
+4.	以上設定完後，執行 crawl_np_104.py，等到出現 Processes all done. 代表資料抓取完畢。
 
 5.	到 output 資料夾內查看 output_104.csv、output_104.excel 爬取結果；包含公司資訊、職缺名稱、聯絡資訊、技能比對(1=有，0=無)等詳細資料。
 
