@@ -7,27 +7,20 @@ import random
 import threading
 from bs4 import BeautifulSoup
 from queue import Queue
-# from multiprocessing.dummy import Pool
-import numpy as np
 import openpyxl
 
 config = {}
-data_np = ""
+df = ""
 url_Queue = Queue()
 pages_Queue = Queue()
 headers_Queue = Queue()
 times_Queue = Queue()
-# 建立 Excel 活頁簿
-wb = openpyxl.Workbook()
-# 取得作用中的工作表
-ws = wb.active
-# # 設定工作表名稱
-ws.title = "104_jobs"
+
 area_dic = {"台北市":"6001001000","新北市":"6001002000","宜蘭縣":"6001003000","基隆市":"6001004000","桃園市":"6001005000","新竹縣市":"6001006000","苗栗縣":"6001007000","台中市":"6001008000","彰化縣":"6001010000","南投縣":"6001011000","雲林縣":"6001012000","嘉義縣市":"6001013000","台南市":"6001014000","高雄市":"6001016000","屏東縣":"6001018000","台東縣":"6001019000","花蓮縣":"6001020000","澎湖縣":"6001021000","金門縣":"6001022000","連江縣":"6001023000"}
 keyword, area_code = "",""
 
 def setting():
-    global data_np, config, keyword, area_code
+    global df, config, keyword, area_code
     if not os.path.exists('./output'):
         os.mkdir('./output')
 
@@ -63,8 +56,8 @@ def setting():
                 else:
                     area_code += "&" + area_dic[a]
 
-    # 建立 NumPy 陣列
-    data_np = np.array([['company', 'job_name', 'job_area', 'job_content', 'job_exp', 'job_require', 'job_welfare', 'job_contact', 'URL'] + config["job_skills"]])
+    df = pd.DataFrame(columns=['company', 'job_name', 'job_area', 'job_content', 'job_exp', 'job_require', 'job_welfare',
+                            'job_contact', 'URL'] + config["job_skills"])
 
 def crawl_url():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
@@ -107,10 +100,9 @@ def crawl_content(url,headers):
             times += 1
     print(company,job_name,job_area)
 
-    row = np.array([company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + c)
-    data_np = np.vstack([data_np,row])
+    tt = times_Queue.get() # 從times Queue獲取編號 依序新增row資料
+    df.loc[tt] = [company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + c
     time.sleep(random.randint(3,5)) # 每爬完一頁休息3-5秒
-
 
 def crawl_thread():
     while pages_Queue.empty() is False:
@@ -146,14 +138,10 @@ if __name__ == '__main__':
     crawl_url()
     print("start crawling content")
     crawl_thread()
-    # 將 NumPy 陣列寫入 Excel 工作表
-    for data in data_np:
-        ws.append(data.tolist())
-    # 儲存 Excel 活頁簿至檔案
-    wb.save(os.path.join('output',fr'{config["output_filename"]}.xlsx'))
-    wb.save(os.path.join('output',fr'{config["output_filename"]}.csv'))
+    df.to_csv(os.path.join('output',fr'{config["output_filename"]}.csv'), index=0, encoding='utf-8-sig') # 存CSV
+    df.to_excel(os.path.join('output',fr'{config["output_filename"]}.xlsx'), engine='xlsxwriter') # 存xlsx
     tEnd = time.time() # 結束時間
     print('Cost %d seconds' % (tEnd - tStart)) # 完成花費時間
-    print(f"crawled total jobs: {len(data_np)-1}")
+    print(f"crawled total jobs: {times_Queue.get()}")
     print("Processes all done.")
     wait = input()
