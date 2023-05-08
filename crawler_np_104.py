@@ -95,6 +95,8 @@ def crawl_content(url,headers):
     job_content = json_data['data']['jobDetail']['jobDescription']
     job_exp = "工作經驗:" + json_data['data']['condition']['workExp']
     job_skills = [i['description'] for i in json_data['data']['condition']['specialty']]
+    job_skills += [i for i in json_data['data']['condition']['other'].split("\n")]
+    job_skills += [i for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
     job_url = url.replace("ajax/content/","")
     # 搜索所需技能
     c = [0 for _ in range(len(config["job_skills"]))]

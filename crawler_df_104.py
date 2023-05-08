@@ -55,6 +55,7 @@ def setting():
                     area_code += "%2C" + area_dic[a]
                 else:
                     area_code += "&" + area_dic[a]
+    print(area_code)
 
     df = pd.DataFrame(columns=['company', 'job_name', 'job_area', 'job_content', 'job_exp', 'job_require', 'job_welfare',
                             'job_contact', 'URL'] + config["job_skills"])
@@ -88,6 +89,8 @@ def crawl_content(url,headers):
     job_content = json_data['data']['jobDetail']['jobDescription']
     job_exp = "工作經驗:" + json_data['data']['condition']['workExp']
     job_skills = [i['description'] for i in json_data['data']['condition']['specialty']]
+    job_skills += [i for i in json_data['data']['condition']['other'].split("\n")]
+    job_skills += [i for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
     job_url = url.replace("ajax/content/","")
     # 搜索所需技能
     c = [0 for _ in range(len(config["job_skills"]))]
