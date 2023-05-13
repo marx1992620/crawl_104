@@ -2,7 +2,6 @@ import requests
 import json
 import os
 import time
-import pandas as pd
 import random
 import threading
 from bs4 import BeautifulSoup
@@ -10,6 +9,7 @@ from queue import Queue
 # from multiprocessing.dummy import Pool
 import numpy as np
 import openpyxl
+import re
 
 config = {}
 data_np = ""
@@ -59,18 +59,40 @@ def setting():
         for a in area:
             if area_dic[a]:
                 if len(area_code)>0:
-                    area_code += "%2C" + area_dic[a]
+                    area_code += "," + area_dic[a]
                 else:
-                    area_code += "&" + area_dic[a]
-
+                    area_code += "&area=" + area_dic[a]
     # 建立 NumPy 陣列
     data_np = np.array([['company', 'job_name', 'job_area', 'job_content', 'job_exp', 'job_require', 'job_welfare', 'job_contact', 'URL'] + config["job_skills"]])
+
+def map_skill(job_skills):
+    column = []
+    print("123456*******")
+    print(len(job_skills))
+    for job_skill in job_skills:
+        pos = 0
+        column.append(0) 
+        for skill_key in config["job_skills"]:
+            # if skill_key == "R":
+            #     match = re.search(r"\WR\W",job_skill.lower())
+            #     if match:
+            #         column[pos] = 1
+            #         continue
+            # else:                           
+            for sk in config["synonym_dic"][skill_key]: # 從同義字字典匹配技能項
+                if sk.lower() in job_skill.lower():
+                    column[pos] = 1
+                    break
+            pos += 1
+        print(pos)
+    return column
+
 
 def crawl_url():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
 
     for n in range(1, int(config["max_pages"])): # 設定爬頁數
-        url = f'https://www.104.com.tw/jobs/search/?ro=0&keyword={keyword}{area_code}&order=1&asc=0&page={n}&mode=s&jobsource=2018indexpoc' # &area=6001001000%2C6001002000%2C6001005000
+        url = f'https://www.104.com.tw/jobs/search/?ro=0&keyword={keyword}{area_code}&order=1&asc=0&page={n}&mode=s&jobsource=2018indexpoc'
         res = requests.get(url, headers=headers)
         soup = BeautifulSoup(res.text, 'html.parser')
         page = soup.select('div[id="js-job-content"]')[0].select('h2[class="b-tit"] a')
@@ -94,22 +116,19 @@ def crawl_content(url,headers):
     job_welfare = json_data['data']['welfare']['welfare']
     job_content = json_data['data']['jobDetail']['jobDescription']
     job_exp = "工作經驗:" + json_data['data']['condition']['workExp']
-    job_skills = [i['description'] for i in json_data['data']['condition']['specialty']]
-    job_skills += [i for i in json_data['data']['condition']['other'].split("\n")]
-    job_skills += [i for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
+    job_skills = [i['description'].replace('\t','').replace(' ','') for i in json_data['data']['condition']['specialty']]
+    job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['condition']['other'].split("\n")]
+    job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
     job_url = url.replace("ajax/content/","")
     # 搜索所需技能
-    c = [0 for _ in range(len(config["job_skills"]))]
-    # times為配對技能要求次數
-    for job_skill in job_skills:
-        times = 0
-        for b in config["synonym_dic"].values(): # 從同義字字典匹配技能項
-            if job_skill.lower() in b:
-                c[times] = 1
-            times += 1
-    print(company,job_name,job_area)
+    # column = [0 for _ in range(len(config["job_skills"]))]
+    #['Linux', 'Python', 'MySQL', 'MongoDB', 'R', 'ETL', 'Docker', 'Tableau', 'PowerBI', 'Data Analysis', 'Machine Learning', 'AI', 'Kafka', 'Hadoop', 'Spark', 'Cloud']
+    column = map_skill(job_skills)
+    print(column)
 
-    row = np.array([company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + c)
+    print(company,job_name,job_area)
+    print("============================================")
+    row = np.array([company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + column)
     data_np = np.vstack([data_np,row])
     time.sleep(random.randint(3,5)) # 每爬完一頁休息3-5秒
 
@@ -124,7 +143,7 @@ def crawl_thread():
             url = 'https://www.104.com.tw/job/ajax/content/'+ j[27:32]
             url_Queue.put(url) # 每個職缺的url放進Queue
     threads = []
-    for t in range(8): # 建執行緒
+    for t in range(1): # 建執行緒
         t = thread_class("t"+str(t))
         t.start()
         threads.append(t)
