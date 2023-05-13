@@ -21,8 +21,10 @@
 
 ### 輸出範例
 #### 資料夾畫面
-![dataframe](https://github.com/marx1992620/work_104/blob/main/demo/folder.png)
+![folder](https://github.com/marx1992620/work_104/blob/main/demo/folder.png)
 #### output資料夾畫面
-![word count](https://github.com/marx1992620/work_104/blob/main/demo/output_dir.png)
+![output_dir](https://github.com/marx1992620/work_104/blob/main/demo/output_dir.png)
+#### 程式執行畫面
+![processing](https://github.com/marx1992620/work_104/blob/main/demo/processing.png)
 #### Excel畫面
 ![excel](https://github.com/marx1992620/work_104/blob/main/demo/output_file.png)
