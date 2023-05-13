@@ -5,9 +5,11 @@ import time
 import pandas as pd
 import random
 import threading
+import openpyxl
+import re
 from bs4 import BeautifulSoup
 from queue import Queue
-import openpyxl
+
 
 config = {}
 df = ""
@@ -52,13 +54,32 @@ def setting():
         for a in area:
             if area_dic[a]:
                 if len(area_code)>0:
-                    area_code += "%2C" + area_dic[a]
+                    area_code += "," + area_dic[a]
                 else:
-                    area_code += "&" + area_dic[a]
-    print(area_code)
+                    area_code += "&area=" + area_dic[a]
 
     df = pd.DataFrame(columns=['company', 'job_name', 'job_area', 'job_content', 'job_exp', 'job_require', 'job_welfare',
                             'job_contact', 'URL'] + config["job_skills"])
+
+
+def map_skill(job_skills):
+    column = [0 for _ in range(len(config["job_skills"]))]
+    for each_job_skill in job_skills:
+        pos = -1
+        for skill_key in config["job_skills"]:
+            pos += 1
+            if skill_key == "R":
+                match = re.search(r"\WR\W",each_job_skill.lower())
+                if match:
+                    column[pos] = 1
+                    continue
+            else:                           
+                for sk in config["synonym_dic"][skill_key]: # 從同義字字典匹配技能項
+                    if sk.lower() in each_job_skill.lower():
+                        column[pos] = 1
+                        break
+    return column
+
 
 def crawl_url():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
@@ -92,19 +113,11 @@ def crawl_content(url,headers):
     job_skills += [i for i in json_data['data']['condition']['other'].split("\n")]
     job_skills += [i for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
     job_url = url.replace("ajax/content/","")
-    # 搜索所需技能
-    c = [0 for _ in range(len(config["job_skills"]))]
-    # times為配對技能要求次數
-    for job_skill in job_skills:
-        times = 0
-        for b in config["synonym_dic"].values(): # 從同義字字典匹配技能項
-            if job_skill.lower() in b:
-                c[times] = 1
-            times += 1
-    print(company,job_name,job_area)
 
+    column = map_skill(job_skills) # 搜索所需技能
+    print(company,job_name,job_area)
     tt = times_Queue.get() # 從times Queue獲取編號 依序新增row資料
-    df.loc[tt] = [company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + c
+    df.loc[tt] = [company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + column
     time.sleep(random.randint(3,5)) # 每爬完一頁休息3-5秒
 
 def crawl_thread():

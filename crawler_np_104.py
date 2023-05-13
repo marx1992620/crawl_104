@@ -65,26 +65,23 @@ def setting():
     # 建立 NumPy 陣列
     data_np = np.array([['company', 'job_name', 'job_area', 'job_content', 'job_exp', 'job_require', 'job_welfare', 'job_contact', 'URL'] + config["job_skills"]])
 
+
 def map_skill(job_skills):
-    column = []
-    print("123456*******")
-    print(len(job_skills))
-    for job_skill in job_skills:
-        pos = 0
-        column.append(0) 
+    column = [0 for _ in range(len(config["job_skills"]))]
+    for each_job_skill in job_skills:
+        pos = -1
         for skill_key in config["job_skills"]:
-            # if skill_key == "R":
-            #     match = re.search(r"\WR\W",job_skill.lower())
-            #     if match:
-            #         column[pos] = 1
-            #         continue
-            # else:                           
-            for sk in config["synonym_dic"][skill_key]: # 從同義字字典匹配技能項
-                if sk.lower() in job_skill.lower():
-                    column[pos] = 1
-                    break
             pos += 1
-        print(pos)
+            if skill_key == "R":
+                match = re.search(r"\WR\W",each_job_skill.lower())
+                if match:
+                    column[pos] = 1
+                    continue
+            else:                           
+                for sk in config["synonym_dic"][skill_key]: # 從同義字字典匹配技能項
+                    if sk.lower() in each_job_skill.lower():
+                        column[pos] = 1
+                        break
     return column
 
 
@@ -120,14 +117,9 @@ def crawl_content(url,headers):
     job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['condition']['other'].split("\n")]
     job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
     job_url = url.replace("ajax/content/","")
-    # 搜索所需技能
-    # column = [0 for _ in range(len(config["job_skills"]))]
-    #['Linux', 'Python', 'MySQL', 'MongoDB', 'R', 'ETL', 'Docker', 'Tableau', 'PowerBI', 'Data Analysis', 'Machine Learning', 'AI', 'Kafka', 'Hadoop', 'Spark', 'Cloud']
-    column = map_skill(job_skills)
-    print(column)
-
+    
+    column = map_skill(job_skills) # 搜索所需技能
     print(company,job_name,job_area)
-    print("============================================")
     row = np.array([company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + column)
     data_np = np.vstack([data_np,row])
     time.sleep(random.randint(3,5)) # 每爬完一頁休息3-5秒
@@ -143,7 +135,7 @@ def crawl_thread():
             url = 'https://www.104.com.tw/job/ajax/content/'+ j[27:32]
             url_Queue.put(url) # 每個職缺的url放進Queue
     threads = []
-    for t in range(1): # 建執行緒
+    for t in range(8): # 建執行緒
         t = thread_class("t"+str(t))
         t.start()
         threads.append(t)
