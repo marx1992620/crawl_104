@@ -9,8 +9,9 @@
 1.	job_keyword = 在104上搜尋職缺的關鍵字。
     max_pages = 要抓取的搜尋結果頁數。
     job_skills = 設定要比對的職缺技能，設定的技能呈現在 Excel 各職缺欄位。
+    job_area = 設定搜索的職缺地點。
 
-2.	synonym_dic = 比對相關技能的同義字（例如AI=artificial intelligence=人工智慧，則寫成"AI": ["artificial intelligence","人工智慧"]），且英文以小寫做比對，不同技能需換行輸入。
+2.	synonym_dic = 比對相關技能的同義字（例如AI=artificial intelligence=人工智慧，則寫成"AI": ["artificial intelligence","人工智慧"]），英文不分大小寫，不同技能需換行輸入。
 
 3.	output_filename = 設定輸出的檔案名稱。
 
