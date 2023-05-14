@@ -58,8 +58,7 @@ def setting():
                 else:
                     area_code += "&area=" + area_dic[a]
 
-    df = pd.DataFrame(columns=['company', 'job_name', 'job_area', 'job_content', 'job_exp', 'job_require', 'job_welfare',
-                            'job_contact', 'URL'] + config["job_skills"])
+    df = pd.DataFrame(columns=['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare','job_contact', 'URL'] + config["job_skills"])
 
 
 def map_skill(job_skills):
@@ -84,7 +83,7 @@ def map_skill(job_skills):
 def crawl_url():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
 
-    for n in range(1, int(config["max_pages"])): # 設定爬頁數
+    for n in range(1, int(config["max_pages"]+1)): # 設定爬頁數
         url = f'https://www.104.com.tw/jobs/search/?ro=0&keyword={keyword}{area_code}&order=1&asc=0&page={n}&mode=s&jobsource=2018indexpoc' # &area=6001001000%2C6001002000%2C6001005000
         res = requests.get(url, headers=headers)
         soup = BeautifulSoup(res.text, 'html.parser')
@@ -105,19 +104,20 @@ def crawl_content(url,headers):
     company = json_data['data']['header']['custName']
     job_area = json_data['data']['jobDetail']['addressRegion'] + json_data['data']['jobDetail']['addressDetail'] 
     job_contact = '聯絡人:' + json_data['data']['contact']['hrName'] + 'email:' + json_data['data']['contact']['email']
-    job_require = "接受身分:" + "、".join([i['description'] for i in json_data['data']['condition']['acceptRole']['role']])
+    job_require_major = "、".join([i for i in json_data['data']['condition']['major']])
+    job_salary = json_data['data']['jobDetail']['salary']
     job_welfare = json_data['data']['welfare']['welfare']
     job_content = json_data['data']['jobDetail']['jobDescription']
     job_exp = "工作經驗:" + json_data['data']['condition']['workExp']
-    job_skills = [i['description'] for i in json_data['data']['condition']['specialty']]
-    job_skills += [i for i in json_data['data']['condition']['other'].split("\n")]
-    job_skills += [i for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
+    job_skills = [i['description'].replace('\t','').replace(' ','') for i in json_data['data']['condition']['specialty']]
+    job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['condition']['other'].split("\n")]
+    job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
     job_url = url.replace("ajax/content/","")
 
     column = map_skill(job_skills) # 搜索所需技能
     print(company,job_name,job_area)
     tt = times_Queue.get() # 從times Queue獲取編號 依序新增row資料
-    df.loc[tt] = [company, job_name, job_area, job_content, job_exp, job_require, job_welfare, job_contact, job_url] + column
+    df.loc[tt] = [company, job_name, job_area, job_salary, job_content, job_exp, job_require_major, job_welfare, job_contact, job_url] + column
     time.sleep(random.randint(3,5)) # 每爬完一頁休息3-5秒
 
 def crawl_thread():

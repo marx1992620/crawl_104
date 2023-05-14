@@ -21,7 +21,7 @@
                     "Cloud": ["cloud","aws","gcp","azure","cloud service","cloud server","雲端服務","雲端運算","雲服務"]
                     },
 
-    "max_pages": 2,
+    "max_pages": 1,
 
     "output_filename": "output_104"
 }
