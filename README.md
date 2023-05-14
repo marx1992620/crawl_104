@@ -15,14 +15,16 @@
 
 3.	output_filename = 設定輸出的檔案名稱。
 
-4.	以上設定完後，執行 crawl_np_104.py，等到出現 Processes all done. 代表資料抓取完畢。
+4.	以上設定完後，執行 crawl_np_104.py 或 dist/crawler_np_104.exe，等到出現 Processes all done. 代表資料抓取完畢。
 
 5.	到 output 資料夾內查看 output_104.csv、output_104.excel 爬取結果；包含公司資訊、職缺名稱、聯絡資訊、技能比對(1=有，0=無)等詳細資料。
 
 ### 輸出範例
 #### 資料夾畫面
-![dataframe](https://github.com/marx1992620/work_104/blob/main/demo/folder.png)
+![folder](https://github.com/marx1992620/work_104/blob/main/demo/folder.png)
 #### output資料夾畫面
-![word count](https://github.com/marx1992620/work_104/blob/main/demo/output_dir.png)
+![output_dir](https://github.com/marx1992620/work_104/blob/main/demo/output_dir.png)
+#### 程式執行畫面
+![processing](https://github.com/marx1992620/work_104/blob/main/demo/processing.png)
 #### Excel畫面
 ![excel](https://github.com/marx1992620/work_104/blob/main/demo/output_file.png)
