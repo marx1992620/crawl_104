@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Configuration Form</title>
+    <style>
+        .select-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .select-wrapper select {
+            width: 200px;
+            padding: 10px;
+        }
+
+        .select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-top: none;
+            display: none;
+        }
+
+        .select-dropdown.open {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Configuration Form</h1>
+    <form id="config_form" action="/save_config" method="post">
+        <label for="input_text">Input Text:</label><br>
+        <input type="text" id="input_text" name="input_text" required><br><br>
+
+        <div class="select-wrapper">
+            <label for="pages">Select Options (Maximum 3):</label><br>
+            <select class="form-control" name="pages" id="pages" onclick="toggleDropdown()">
+                <option selected="selected">--請選擇搜尋頁數--</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="30">30</option>
+                <option value="35">35</option>
+                <option value="40">40</option>
+                <option value="45">45</option>
+                <option value="50">50</option>
+            </select>
+            <ul class="select-dropdown" id="dropdown_options"></ul>
+        </div><br><br>
+
+        <input type="submit" value="Save Config">
+    </form>
+
+    <p>Selected Options:</p>
+    <ul id="selected_options"></ul>
+
+    <script>
+        var selectBox = document.getElementById("pages");
+        var dropdown = document.getElementById("dropdown_options");
+        var selectedOptions = [];
+
+        function toggleDropdown() {
+            dropdown.innerHTML = "";
+            for (var i = 1; i < selectBox.options.length; i++) {
+                var option = selectBox.options[i];
+                if (selectedOptions.includes(option.value)) {
+                    option.disabled = true;
+                } else {
+                    option.disabled = false;
+                }
+                var li = document.createElement("li");
+                li.textContent = option.text;
+                li.setAttribute("data-value", option.value);
+                li.onclick = function() {
+                    selectBox.value = this.getAttribute("data-value");
+                    toggleOption(this.getAttribute("data-value"));
+                    toggleDropdown();
+                };
+                dropdown.appendChild(li);
+            }
+
+            dropdown.classList.toggle("open");
+        }
+
+        document.addEventListener("click", function(event) {
+            var selectWrapper = document.querySelector(".select-wrapper");
+            if (!selectWrapper.contains(event.target)) {
+                var dropdown = document.getElementById("dropdown_options");
+                if (dropdown.classList.contains("open")) {
+                    dropdown.classList.remove("open");
+                }
+            }
+        });
+
+        function toggleOption(value) {
+            var index = selectedOptions.indexOf(value);
+            if (index > -1) {
+                selectedOptions.splice(index, 1);
+            } else {
+                if (selectedOptions.length < 3) {
+                    selectedOptions.push(value);
+                }
+            }
+            displaySelectedOptions();
+        }
+
+        function displaySelectedOptions() {
+            var selectedOptionsElement = document.getElementById("selected_options");
+            selectedOptionsElement.innerHTML = "";
+            for (var i = 0; i < selectedOptions.length; i++) {
+                var li = document.createElement("li");
+                li.textContent = selectedOptions[i];
+                selectedOptionsElement.appendChild(li);
+            }
+        }
+    </script>
+</body>
+</html>
