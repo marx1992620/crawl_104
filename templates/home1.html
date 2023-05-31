@@ -3,80 +3,66 @@
 <head>
     <title>Configuration Form</title>
     <style>
+        .dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
 
+        .dropdown-wrapper .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .dropdown-wrapper.show .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-wrapper .dropdown-content input[type="checkbox"] {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
-    <h2>搜尋104相關職缺</h2>
+    <h2>Search Job Openings</h2>
     <form id="config_form" action="/save_config" method="post">
         <label for="input_text">Input Text:</label><br>
         <input type="text" id="input_text" name="input_text" required><br><br>
 
-
-        <p>選擇地點:</p>
-        <ul id="location"></ul>
-        <select class="form-control" name="location" id="location">
-            <option selected="selected">--請選擇地點--</option>
-            <option value="不拘">不拘</option>
-            <option value="台北">台北</option>
-            <option value="新北">新北</option>
-            <option value="桃園">桃園</option>
-            <option value="新竹">新竹</option>
-            <option value="台中">台中</option>
-            <option value="台南">台南</option>
-            <option value="高雄">高雄</option>
-            <option value="宜蘭">宜蘭</option>
-            <option value="基隆">基隆</option>
-            <option value="苗栗">苗栗</option>
-            <option value="彰化">彰化</option>
-            <option value="花蓮">花蓮</option>
-            <option value="台東">台東</option>
-            <option value="南投">南投</option>
-            <option value="雲林">雲林</option>
-            <option value="嘉義">嘉義</option>
-            <option value="屏東">屏東</option>
-            <option value="澎湖">澎湖</option>
-            <option value="金門">金門</option>
-            <option value="連江">連江</option>
-            </select><br><br>
-
-        <div class="select-wrapper">
-            <label for="pages">Select Options (Maximum 3):</label><br>
-            <select class="form-control" name="pages" id="pages" onclick="toggleDropdown()">
-                <option selected="selected">--請選擇搜尋頁數--</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-                <option value="25">25</option>
-                <option value="30">30</option>
-                <option value="35">35</option>
-                <option value="40">40</option>
-                <option value="45">45</option>
-                <option value="50">50</option>
-            </select>
-            <ul class="select-dropdown" id="dropdown_options"></ul>
+        <div class="dropdown-wrapper">
+            <input type="text" id="selected_options_input" readonly onclick="toggleDropdown()" placeholder="Select Options (Maximum 3)"><br>
+            <div class="dropdown-content" id="dropdown_options">
+                <label><input type="checkbox" value="5">5</label><br>
+                <label><input type="checkbox" value="10">10</label><br>
+                <label><input type="checkbox" value="15">15</label><br>
+                <label><input type="checkbox" value="20">20</label><br>
+                <label><input type="checkbox" value="25">25</label><br>
+                <label><input type="checkbox" value="30">30</label><br>
+                <label><input type="checkbox" value="35">35</label><br>
+                <label><input type="checkbox" value="40">40</label><br>
+                <label><input type="checkbox" value="45">45</label><br>
+                <label><input type="checkbox" value="50">50</label><br>
+            </div>
         </div><br><br>
 
         <input type="submit" value="Save Config">
     </form>
 
-
     <script>
-        var selectBox = document.getElementById("pages");
-        var dropdown = document.getElementById("dropdown_options");
+        var dropdownWrapper = document.querySelector(".dropdown-wrapper");
+        var dropdownContent = document.getElementById("dropdown_options");
+        var checkboxes = dropdownContent.getElementsByTagName("input");
         var selectedOptions = [];
 
-
-        document.addEventListener("click", function(event) {
-            var selectWrapper = document.querySelector(".select-wrapper");
-            if (!selectWrapper.contains(event.target)) {
-                var dropdown = document.getElementById("dropdown_options");
-                if (dropdown.classList.contains("open")) {
-                    dropdown.classList.remove("open");
-                }
-            }
-        });
+        function toggleDropdown() {
+            dropdownWrapper.classList.toggle("show");
+        }
 
         function toggleOption(value) {
             var index = selectedOptions.indexOf(value);
@@ -85,19 +71,23 @@
             } else {
                 if (selectedOptions.length < 3) {
                     selectedOptions.push(value);
+                } else {
+                    // Uncheck the checkbox if maximum limit reached
+                    document.querySelector('input[value="' + value + '"]').checked = false;
                 }
             }
             displaySelectedOptions();
         }
 
         function displaySelectedOptions() {
-            var selectedOptionsElement = document.getElementById("selected_options");
-            selectedOptionsElement.innerHTML = "";
-            for (var i = 0; i < selectedOptions.length; i++) {
-                var li = document.createElement("li");
-                li.textContent = selectedOptions[i];
-                selectedOptionsElement.appendChild(li);
-            }
+            var selectedOptionsInput = document.getElementById("selected_options_input");
+            selectedOptionsInput.value = selectedOptions.join(", ");
+        }
+
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].addEventListener("change", function() {
+                toggleOption(this.value);
+            });
         }
     </script>
 </body>
