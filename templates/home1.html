@@ -30,28 +30,42 @@
     </style>
 </head>
 <body>
-    <h2>Search Job Openings</h2>
+    <h2>104 職缺搜尋</h2>
     <form id="config_form" action="/save_config" method="post">
-        <label for="input_text">Input Text:</label><br>
+        <label for="input_text">請輸入關鍵字:</label><br>
         <input type="text" id="input_text" name="input_text" required><br><br>
 
+        <label for="input_int">請輸入搜尋頁數(1-50):</label><br>
+        <input type="int" id="input_int" name="input_int" required><br><br>
+        <p>請選擇工作地點(最多三個):</p>
         <div class="dropdown-wrapper">
             <input type="text" id="selected_options_input" readonly onclick="toggleDropdown()" placeholder="Select Options (Maximum 3)"><br>
             <div class="dropdown-content" id="dropdown_options">
-                <label><input type="checkbox" value="5">5</label><br>
-                <label><input type="checkbox" value="10">10</label><br>
-                <label><input type="checkbox" value="15">15</label><br>
-                <label><input type="checkbox" value="20">20</label><br>
-                <label><input type="checkbox" value="25">25</label><br>
-                <label><input type="checkbox" value="30">30</label><br>
-                <label><input type="checkbox" value="35">35</label><br>
-                <label><input type="checkbox" value="40">40</label><br>
-                <label><input type="checkbox" value="45">45</label><br>
-                <label><input type="checkbox" value="50">50</label><br>
+                <label><input type="checkbox" value="不拘">不拘</label><br>
+                <label><input type="checkbox" value="台北">台北</label><br>
+                <label><input type="checkbox" value="新北">新北</label><br>
+                <label><input type="checkbox" value="桃園">桃園</label><br>
+                <label><input type="checkbox" value="新竹">新竹</label><br>
+                <label><input type="checkbox" value="台中">台中</label><br>
+                <label><input type="checkbox" value="台南">台南</label><br>
+                <label><input type="checkbox" value="高雄">高雄</label><br>
+                <label><input type="checkbox" value="苗栗">苗栗</label><br>
+                <label><input type="checkbox" value="宜蘭">宜蘭</label><br>
+                <label><input type="checkbox" value="基隆">基隆</label><br>
+                <label><input type="checkbox" value="彰化">彰化</label><br>
+                <label><input type="checkbox" value="花蓮">花蓮</label><br>
+                <label><input type="checkbox" value="台東">台東</label><br>
+                <label><input type="checkbox" value="南投">南投</label><br>
+                <label><input type="checkbox" value="雲林">雲林</label><br>
+                <label><input type="checkbox" value="嘉義">嘉義</label><br>
+                <label><input type="checkbox" value="屏東">屏東</label><br>
+                <label><input type="checkbox" value="澎湖">澎湖</label><br>
+                <label><input type="checkbox" value="金門">金門</label><br>
+                <label><input type="checkbox" value="連江">連江</label><br>
             </div>
         </div><br><br>
 
-        <input type="submit" value="Save Config">
+        <input type="submit" value="搜尋">
     </form>
 
     <script>
