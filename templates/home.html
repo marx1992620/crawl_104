@@ -1,60 +1,155 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>網頁的頁面名稱</title>
+    <title>Configuration Form</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 300px; /* Adjust the width as desired */
+        }
+
+        .dropdown-wrapper .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            max-height: 150px;
+            width: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .dropdown-wrapper.show .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-wrapper .dropdown-content input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        /* Styling for the input boxes */
+        input[type="text"],
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px; /* Adjust the width as desired */
+        }
+
+        /* Styling for the submit button */
+        #submit_btn_wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #submit_btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            width: 200px;
+            background-color: rgb(255, 174, 0);
+            color: white;
+        }
+    </style>
+    
 </head>
-<body>
+<body> 
+    <div class="container">
+        <h2>搜尋104職缺</h2>
+        <form id="config_form" action="/save_config" method="post">
+            <label for="input_text">請輸入關鍵字:</label><br>
+            <input type="text" id="input_text" name="input_text" required><br><br>
+            
+            <p>請選擇工作地點(最多三個):</p>
+            <div class="dropdown-wrapper">
+                <input type="text" id="selected_options_input" readonly onclick="toggleDropdown()" name="selected_options" placeholder="Select Options (Maximum 3)"><br>
+                <div class="dropdown-content" id="dropdown_options">
+                    <label><input type="checkbox" value="不拘">不拘</label><br>
+                    <label><input type="checkbox" value="台北">台北</label><br>
+                    <label><input type="checkbox" value="新北">新北</label><br>
+                    <label><input type="checkbox" value="桃園">桃園</label><br>
+                    <label><input type="checkbox" value="新竹">新竹</label><br>
+                    <label><input type="checkbox" value="台中">台中</label><br>
+                    <label><input type="checkbox" value="台南">台南</label><br>
+                    <label><input type="checkbox" value="高雄">高雄</label><br>
+                    <label><input type="checkbox" value="苗栗">苗栗</label><br>
+                    <label><input type="checkbox" value="宜蘭">宜蘭</label><br>
+                    <label><input type="checkbox" value="基隆">基隆</label><br>
+                    <label><input type="checkbox" value="彰化">彰化</label><br>
+                    <label><input type="checkbox" value="花蓮">花蓮</label><br>
+                    <label><input type="checkbox" value="台東">台東</label><br>
+                    <label><input type="checkbox" value="南投">南投</label><br>
+                    <label><input type="checkbox" value="雲林">雲林</label><br>
+                    <label><input type="checkbox" value="嘉義">嘉義</label><br>
+                    <label><input type="checkbox" value="屏東">屏東</label><br>
+                    <label><input type="checkbox" value="澎湖">澎湖</label><br>
+                    <label><input type="checkbox" value="金門">金門</label><br>
+                    <label><input type="checkbox" value="連江">連江</label><br>
+                </div>
+            </div><br><br><br><br>
 
+            <label for="input_int">請輸入搜尋頁數(1-50):</label><br>
+            <input type="number" id="input_int" name="input_int" min="1" max="50" required><br><br><br><br>
 
-    <h1><font color="gray">下載內容</font></h1>
-        <p>輸入職缺關鍵字</p>
-        <input type="text" name="keyword" value="{{keyword}}"><br><br>
-        <select class="form-control" name="pages" id="pages">
-        <option selected="selected">--請選擇搜尋頁數--</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-        <option value="25">25</option>
-        <option value="30">30</option>
-        <option value="35">35</option>
-        <option value="40">40</option>
-        <option value="45">45</option>
-        <option value="50">50</option>
-        </select><br><br>
+            <div id="submit_btn_wrapper">
+                <input type="submit" id="submit_btn" value="搜尋">
+            </div>
+        </form>
+    </div>
 
-        <select class="form-control" name="location" id="location">
-        <option selected="selected">--請選擇地點--</option>
-        <option value="不拘">不拘</option>
-        <option value="台北">台北</option>
-        <option value="新北">新北</option>
-        <option value="桃園">桃園</option>
-        <option value="新竹">新竹</option>
-        <option value="台中">台中</option>
-        <option value="台南">台南</option>
-        <option value="高雄">高雄</option>
-        <option value="宜蘭">宜蘭</option>
-        <option value="基隆">基隆</option>
-        <option value="苗栗">苗栗</option>
-        <option value="彰化">彰化</option>
-        <option value="花蓮">花蓮</option>
-        <option value="台東">台東</option>
-        <option value="南投">南投</option>
-        <option value="雲林">雲林</option>
-        <option value="嘉義">嘉義</option>
-        <option value="屏東">屏東</option>
-        <option value="澎湖">澎湖</option>
-        <option value="金門">金門</option>
-        <option value="連江">連江</option>
-        </select><br><br>
-        <button type='submit' name="search" value="search" align="center">下載csv
-            </button> <br>
+    <script>
+        var dropdownWrapper = document.querySelector(".dropdown-wrapper");
+        var dropdownContent = document.getElementById("dropdown_options");
+        var checkboxes = dropdownContent.getElementsByTagName("input");
+        var selectedOptions = [];
 
+        function toggleDropdown() {
+            dropdownWrapper.classList.toggle("show");
+        }
 
-    </form>
+        function toggleOption(value) {
+            var index = selectedOptions.indexOf(value);
+            if (index > -1) {
+                selectedOptions.splice(index, 1);
+            } else {
+                if (selectedOptions.length < 3) {
+                    selectedOptions.push(value);
+                } else {
+                    // Uncheck the checkbox if maximum limit reached
+                    document.querySelector('input[value="' + value + '"]').checked = false;
+                }
+            }
+            displaySelectedOptions();
+        }
 
+        function displaySelectedOptions() {
+            var selectedOptionsInput = document.getElementById("selected_options_input");
+            selectedOptionsInput.value = selectedOptions.join(", ");
+        }
+
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].addEventListener("change", function() {
+                toggleOption(this.value);
+            });
+        }
+    </script>
 </body>
 </html>

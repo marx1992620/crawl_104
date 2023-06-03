@@ -11,13 +11,18 @@ config = {"input_text": "", "selected_option": ""}
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return templates.TemplateResponse("home1.html", {"request": request})
+    return templates.TemplateResponse("home.html", {"request": request})
+
 
 @app.post("/save_config")
-async def save_config(input_text: str = Form(...), selected_options: List[str] = Form(...)):
-    # Use the input_text and selected_options in your backend logic
-    # ...
-    return {"message": "Config saved successfully"}
+async def save_config(input_text: str = Form(...), input_int: int = Form(...), selected_options: str = Form(...)):
+    # Process the form data here
+    print(f"Input Text: {input_text}")
+    print(f"Input Int: {input_int}")
+    print(f"Selected Options: {selected_options}")
+
+    # Return a response or perform other operations as needed
+    return {"message": "Form data received successfully"}
 
 if __name__ == "__main__":
     import uvicorn
