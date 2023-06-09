@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from typing import List
 from fastapi import FastAPI, Form
+import utils
+
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -20,6 +21,11 @@ async def save_config(input_text: str = Form(...), input_int: int = Form(...), s
     print(f"Input Text: {input_text}")
     print(f"Input Int: {input_int}")
     print(f"Selected Options: {selected_options}")
+    selected_options = selected_options.replace(" ","")
+    selected_options = selected_options.split(",")
+    utils.main(input_text,input_int,selected_options)
+
+
 
     # Return a response or perform other operations as needed
     return {"message": "Form data received successfully"}
