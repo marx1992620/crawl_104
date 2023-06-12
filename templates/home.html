@@ -10,6 +10,7 @@
             height: 100vh;
             padding: 20px;
             box-sizing: border-box;
+            background-color: #f2f2f2;
         }
 
         .container {
@@ -17,12 +18,31 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 10px;
         }
 
         .dropdown-wrapper {
             position: relative;
             display: inline-block;
-            width: 300px; /* Adjust the width as desired */
+            width: 300px;
         }
 
         .dropdown-wrapper .dropdown-content {
@@ -46,15 +66,13 @@
             margin-right: 5px;
         }
 
-        /* Styling for the input boxes */
         input[type="text"],
         input[type="number"] {
             padding: 10px;
             font-size: 16px;
-            width: 300px; /* Adjust the width as desired */
+            width: 300px;
         }
 
-        /* Styling for the submit button */
         #submit_btn_wrapper {
             display: flex;
             justify-content: center;
@@ -65,16 +83,28 @@
             padding: 10px 20px;
             font-size: 16px;
             width: 200px;
-            background-color: rgb(255, 174, 0);
-            color: white;
+            background-color: #ffae00;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #upload_btn_wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #upload_btn {
+            padding: 10px 20px;
+            font-size: 16px;
         }
     </style>
-    
 </head>
 <body> 
     <div class="container">
         <h2>搜尋104職缺</h2>
-        <form id="config_form" action="/save_config" method="post">
+        <form id="config_form" action="/save_config" method="post" enctype="multipart/form-data">
             <label for="input_text">請輸入關鍵字:</label><br>
             <input type="text" id="input_text" name="input_text" required><br><br>
             
@@ -82,32 +112,36 @@
             <div class="dropdown-wrapper">
                 <input type="text" id="selected_options_input" readonly onclick="toggleDropdown()" name="selected_options" placeholder="Select Options (Maximum 3)"><br>
                 <div class="dropdown-content" id="dropdown_options">
-                    <label><input type="checkbox" value="不拘">不拘</label><br>
-                    <label><input type="checkbox" value="台北">台北市</label><br>
-                    <label><input type="checkbox" value="新北">新北市</label><br>
-                    <label><input type="checkbox" value="桃園">桃園市</label><br>
-                    <label><input type="checkbox" value="新竹">新竹縣市</label><br>
-                    <label><input type="checkbox" value="台中">台中市</label><br>
-                    <label><input type="checkbox" value="台南">台南市</label><br>
-                    <label><input type="checkbox" value="高雄">高雄市</label><br>
-                    <label><input type="checkbox" value="苗栗">苗栗縣</label><br>
-                    <label><input type="checkbox" value="宜蘭">宜蘭縣</label><br>
-                    <label><input type="checkbox" value="基隆">基隆市</label><br>
-                    <label><input type="checkbox" value="彰化">彰化縣</label><br>
-                    <label><input type="checkbox" value="花蓮">花蓮縣</label><br>
-                    <label><input type="checkbox" value="台東">台東縣</label><br>
-                    <label><input type="checkbox" value="南投">南投縣</label><br>
-                    <label><input type="checkbox" value="雲林">雲林縣</label><br>
-                    <label><input type="checkbox" value="嘉義">嘉義縣</label><br>
-                    <label><input type="checkbox" value="屏東">屏東縣</label><br>
-                    <label><input type="checkbox" value="澎湖">澎湖縣</label><br>
-                    <label><input type="checkbox" value="金門">金門縣</label><br>
-                    <label><input type="checkbox" value="連江">連江縣</label><br>
+                    <label><input type="checkbox" value="台北市">台北市</label><br>
+                    <label><input type="checkbox" value="新北市">新北市</label><br>
+                    <label><input type="checkbox" value="桃園市">桃園市</label><br>
+                    <label><input type="checkbox" value="新竹縣市">新竹縣市</label><br>
+                    <label><input type="checkbox" value="台中市">台中市</label><br>
+                    <label><input type="checkbox" value="台南市">台南市</label><br>
+                    <label><input type="checkbox" value="高雄市">高雄市</label><br>
+                    <label><input type="checkbox" value="苗栗縣">苗栗縣</label><br>
+                    <label><input type="checkbox" value="宜蘭縣">宜蘭縣</label><br>
+                    <label><input type="checkbox" value="基隆市">基隆市</label><br>
+                    <label><input type="checkbox" value="彰化縣">彰化縣</label><br>
+                    <label><input type="checkbox" value="花蓮縣">花蓮縣</label><br>
+                    <label><input type="checkbox" value="台東縣">台東縣</label><br>
+                    <label><input type="checkbox" value="南投縣">南投縣</label><br>
+                    <label><input type="checkbox" value="雲林縣">雲林縣</label><br>
+                    <label><input type="checkbox" value="嘉義縣">嘉義縣</label><br>
+                    <label><input type="checkbox" value="屏東縣">屏東縣</label><br>
+                    <label><input type="checkbox" value="澎湖縣">澎湖縣</label><br>
+                    <label><input type="checkbox" value="金門縣">金門縣</label><br>
+                    <label><input type="checkbox" value="連江縣">連江縣</label><br>
                 </div>
             </div><br><br><br><br>
 
             <label for="input_int">請輸入搜尋頁數(1-50):</label><br>
-            <input type="number" id="input_int" name="input_int" min="1" max="50" required><br><br><br><br>
+            <input type="number" id="input_int" name="input_int" min="1" max="50" required><br><br><br>
+
+            <p>技能同義詞json檔案上傳:</p>
+            <div id="upload_btn_wrapper">
+                <input type="file" id="upload_btn" name="file" accept=".json">
+            </div>
 
             <div id="submit_btn_wrapper">
                 <input type="submit" id="submit_btn" value="搜尋">

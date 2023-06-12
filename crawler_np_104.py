@@ -23,7 +23,6 @@ class App:
     ws = wb.active
     # # 設定工作表名稱
     ws.title = "104_jobs"
-
     area_dic = {"不拘":"","台北市":"6001001000","新北市":"6001002000","宜蘭縣":"6001003000","基隆市":"6001004000","桃園市":"6001005000","新竹縣市":"6001006000","苗栗縣":"6001007000","台中市":"6001008000","彰化縣":"6001010000","南投縣":"6001011000","雲林縣":"6001012000","嘉義縣市":"6001013000","台南市":"6001014000","高雄市":"6001016000","屏東縣":"6001018000","台東縣":"6001019000","花蓮縣":"6001020000","澎湖縣":"6001021000","金門縣":"6001022000","連江縣":"6001023000"}
     area_code, data_np = "",""
 
@@ -95,6 +94,7 @@ class App:
             page = soup.select('div[id="js-job-content"]')[0].select('h2[class="b-tit"] a')
             App.pages_Queue.put(page)
 
+
     def crawl_content(url,headers):
         for _ in range(2):
             try:
@@ -118,7 +118,10 @@ class App:
         job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
         job_url = url.replace("ajax/content/","")
         
-        column = App.map_skill(job_skills) # 搜索所需技能
+        if "job_skills" in App.config:
+            column = App.map_skill(job_skills) # 搜索所需技能
+        else:
+            column = []
         print(company,job_name,job_area)
         row = np.array([company, job_name, job_area, job_salary, job_content, job_exp, job_require_major, job_welfare, job_contact, job_url] + column)
         App.data_np = np.vstack([App.data_np,row])

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Output Table</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        table {
+            border-collapse: collapse;
+            height: 80%;
+            width: 80%;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+            overflow: hidden;
+            height: auto;
+            width: 16px;
+            /* text-overflow: ellipsis; */
+            white-space: nowrap;
+        }
+
+        tbody {
+            display: block;
+            height: 300px;
+            overflow-y: scroll;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1;
+        }
+
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Output Table</h2>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    {% for column_name in column_names %}
+                        <th>{{ column_name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in numpy_array %}
+                    <tr>
+                        {% for item in row %}
+                            <td title="{{ item }}">{{ item }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
