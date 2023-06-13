@@ -21,7 +21,7 @@
 ### 網頁輸入範例
 ![folder](https://github.com/marx1992620/work_104/blob/main/demo/web.png)
 #### 搜尋技能同義詞範例
-![folder](https://github.com/marx1992620/work_104/blob/main/demo/.png)
+![folder](https://github.com/marx1992620/work_104/blob/main/demo/synonym.png)
 ### 網頁輸出範例
 ![folder](https://github.com/marx1992620/work_104/blob/main/demo/output_table.png)
 ### 檔案輸出範例
