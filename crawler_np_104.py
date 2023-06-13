@@ -107,7 +107,9 @@ class App:
         job_name = json_data['data']['header']['jobName']
         company = json_data['data']['header']['custName']
         job_area = json_data['data']['jobDetail']['addressRegion'] + json_data['data']['jobDetail']['addressDetail'] 
-        job_contact = '聯絡人:' + json_data['data']['contact']['hrName'] + 'email:' + json_data['data']['contact']['email']
+        job_contact = '聯絡人:' + json_data['data']['contact']['hrName']
+        if len(json_data['data']['contact']['email'])>0:
+            job_contact += '\nemail:' + json_data['data']['contact']['email']
         job_require_major = "、".join([i for i in json_data['data']['condition']['major']])
         job_salary = json_data['data']['jobDetail']['salary']
         job_welfare = json_data['data']['welfare']['welfare']
