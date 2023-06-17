@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Output Table</title>
+    <style>
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        table {
+            border-collapse: collapse;
+            height: 90%;
+            width: 90%;
+            table-layout: fixed;
+            text-align: center;
+            margin: auto;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+            height: 20px;
+            width: 30px;
+        }
+
+        td {
+            overflow: auto;
+        }
+
+        tbody {
+            display: block;
+            height: 600px;
+            overflow-y: scroll;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1;
+        }
+
+        h2,p {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h2>Output Table</h2>
+        <p>Downloaded the output file at output/output_104.xlsx & output_104.csv</p>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        {% for column_name in column_names %}
+                            <th>{{ column_name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in numpy_array %}
+                        <tr>
+                            {% for item in row %}
+                                <td title="{{ item }}">{{ item }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</body>
+</html>

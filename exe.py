@@ -6,10 +6,8 @@ import json
 import os
 import csv
 
-
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-
 config = {"input_text": "", "selected_option": ""}
 
 @app.get("/", response_class=HTMLResponse)
