@@ -54,6 +54,8 @@ def main(job_keyword,max_pages,area,skills):
     for data in App.data_np:
         App.ws.append(data.tolist())
     # 儲存 Excel 活頁簿至檔案
+    if not os.path.exists("output"):
+        os.mkdirs("output")
     App.wb.save(os.path.join('output',fr'{App.config["output_filename"]}.xlsx'))
     App.wb.save(os.path.join('output',fr'{App.config["output_filename"]}.csv'))
     print(f"crawled total jobs: {len(App.data_np)-1}")
