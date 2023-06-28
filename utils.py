@@ -2,7 +2,7 @@
 import os
 import numpy as np
 from crawler_np_104 import App
-
+import traceback
 
 
 def setting(area):
@@ -52,7 +52,12 @@ def main(job_keyword,max_pages,area,skills):
     App.crawl_thread()
     # 將 NumPy 陣列寫入 Excel 工作表
     for data in App.data_np:
-        App.ws.append(data.tolist())
+        try:
+            App.ws.append(data.tolist())
+        except:
+            traceback.print_exc()
+            print(data)
+
     # 儲存 Excel 活頁簿至檔案
     App.wb.save(os.path.join('output',fr'{App.config["output_filename"]}.xlsx'))
     App.wb.save(os.path.join('output',fr'{App.config["output_filename"]}.csv'))
