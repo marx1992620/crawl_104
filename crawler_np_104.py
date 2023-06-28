@@ -104,17 +104,17 @@ class App:
                 time.sleep(3)
         soup = BeautifulSoup(res.text,'html.parser')
         json_data = json.loads(soup.text) # 資料轉dict格式
-        job_name = json_data['data']['header']['jobName']
-        company = json_data['data']['header']['custName']
-        job_area = json_data['data']['jobDetail']['addressRegion'] + json_data['data']['jobDetail']['addressDetail'] 
-        job_contact = '聯絡人:' + json_data['data']['contact']['hrName']
+        job_name = str(json_data['data']['header']['jobName'])
+        company = str(json_data['data']['header']['custName'])
+        job_area = str(json_data['data']['jobDetail']['addressRegion']) + str(json_data['data']['jobDetail']['addressDetail'])
+        job_contact = '聯絡人:' + str(json_data['data']['contact']['hrName'])
         if len(json_data['data']['contact']['email'])>0:
             job_contact += '\nemail:' + json_data['data']['contact']['email']
-        job_require_major = "、".join([i for i in json_data['data']['condition']['major']])
-        job_salary = json_data['data']['jobDetail']['salary']
-        job_welfare = json_data['data']['welfare']['welfare']
-        job_content = json_data['data']['jobDetail']['jobDescription']
-        job_exp = "工作經驗:" + json_data['data']['condition']['workExp']
+        job_require_major = "、".join([str(i) for i in json_data['data']['condition']['major']])
+        job_salary = str(json_data['data']['jobDetail']['salary'])
+        job_welfare = str(json_data['data']['welfare']['welfare'])
+        job_content = str(json_data['data']['jobDetail']['jobDescription'])
+        job_exp = "工作經驗:" + str(json_data['data']['condition']['workExp'])
         job_skills = [i['description'].replace('\t','').replace(' ','') for i in json_data['data']['condition']['specialty']]
         job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['condition']['other'].split("\n")]
         job_skills += [i.replace('\t','').replace(' ','')  for i in json_data['data']['jobDetail']['jobDescription'].split("\n")]
