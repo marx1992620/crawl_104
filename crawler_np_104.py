@@ -72,7 +72,7 @@ class App:
             for skill_key in App.config["job_skills"]:
                 pos += 1
                 if skill_key == "R":
-                    match = re.search(r"\WR\W",each_job_skill.lower())
+                    match = re.search(r"\Wr\W",each_job_skill.lower())
                     if match:
                         column[pos] = 1
                         continue
