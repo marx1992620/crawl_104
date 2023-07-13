@@ -2,6 +2,16 @@
 <html>
 <head>
     <title>Configuration Form</title>
+    <script>
+        window.onload = function() {
+          if (!sessionStorage.getItem('pageRefreshed')) {
+            sessionStorage.setItem('pageRefreshed', 'true');
+            location.reload();
+          } else {
+            sessionStorage.removeItem('pageRefreshed');
+          }
+        };
+    </script>
     <style>
         body {
             display: flex;

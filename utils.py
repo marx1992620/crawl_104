@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 import os
 import numpy as np
-from crawler_np_104 import App
 import traceback
+from crawler_np_104 import App
 
 
 def setting(area):

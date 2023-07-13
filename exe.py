@@ -1,10 +1,9 @@
+import utils
+import json
 from fastapi import FastAPI, Request, File, UploadFile, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-import utils
-import json
-import os
-import csv
+
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")

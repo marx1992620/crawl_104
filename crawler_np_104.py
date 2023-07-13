@@ -5,11 +5,12 @@ import os
 import time
 import random
 import threading
-from bs4 import BeautifulSoup
-from queue import Queue
 import numpy as np
 import openpyxl
 import re
+from bs4 import BeautifulSoup
+from queue import Queue
+
 
 class App:
     config = {}
