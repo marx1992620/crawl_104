@@ -11,7 +11,6 @@ import re
 from bs4 import BeautifulSoup
 from queue import Queue
 
-
 class App:
     config = {}
     url_Queue = Queue()
