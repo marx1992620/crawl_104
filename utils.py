@@ -32,20 +32,23 @@ def skill_synonym(skills):
 
 
 def main(job_keyword,max_pages,area,skills):
-    App.area_code = setting(area)
-    App.config["job_keyword"] = job_keyword
-    App.config["max_rows"] = max_pages * 60
-    App.config["max_pages"] = max_pages
-    App.config["output_filename"] = "output_104"
+    try:
+        App.area_code = setting(area)
+        App.config["job_keyword"] = job_keyword
+        App.config["max_rows"] = max_pages * 60
+        App.config["max_pages"] = max_pages
+        App.config["output_filename"] = "output_104"
 
-    if skills != None:
-        App.config["synonym_dic"] = skills["synonym_dic"]
-        skill_synonym(skills)    
-    if "job_skills" in App.config:
-        App.data_np = np.array([['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare', 'job_contact', 'URL'] + App.config["job_skills"]])
-    else:
-        App.data_np = np.array([['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare', 'job_contact', 'URL']])
-
+        if skills != None:
+            App.config["synonym_dic"] = skills["synonym_dic"]
+            skill_synonym(skills)    
+        if "job_skills" in App.config:
+            App.data_np = np.array([['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare', 'job_contact', 'URL', 'match_skills'] + App.config["job_skills"]])
+        else:
+            App.data_np = np.array([['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare', 'job_contact', 'URL']])
+    except:
+        traceback.print_exc()
+        return "data input occurs error"
     print("start crawling 104 website")
     App.crawl_url()
     print("start crawling content")

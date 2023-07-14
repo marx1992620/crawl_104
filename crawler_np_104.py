@@ -62,7 +62,7 @@ class App:
                     else:
                         App.area_code += "&area=" + App.area_dic[a]
         # 建立 NumPy 陣列
-        App.data_np = np.array([['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare', 'job_contact', 'URL'] + App.config["job_skills"]])
+        App.data_np = np.array([['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare', 'job_contact', 'URL', 'match_skills'] + App.config["job_skills"]])
 
 
     def map_skill(job_skills):
@@ -81,6 +81,7 @@ class App:
                         if sk.lower() in each_job_skill.lower():
                             column[pos] = 1
                             break
+        column.insert(0,sum(column))
         return column
 
 
