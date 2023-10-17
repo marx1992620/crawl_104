@@ -42,4 +42,4 @@ async def save_config(request: Request, input_text: str = Form(...), input_int: 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8880)
+    uvicorn.run(app, host="0.0.0.0", port=8880)
