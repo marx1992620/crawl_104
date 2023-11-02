@@ -36,8 +36,9 @@ async def save_config(request: Request, input_text: str = Form(...), input_int: 
         json_data = None
 
     dataframe = utils.main(input_text,input_int,selected_options,json_data)
+    np_tolist = dataframe.tolist()
 
-    return templates.TemplateResponse('success.html', {"request": request,"numpy_array": dataframe})
+    return templates.TemplateResponse('success.html', {"request": request,"np_tolist": np_tolist})
 
 
 if __name__ == "__main__":

@@ -43,9 +43,9 @@ def main(job_keyword,max_pages,area,skills):
             App.config["synonym_dic"] = skills["synonym_dic"]
             skill_synonym(skills)    
         if "job_skills" in App.config:
-            App.data_np = np.array([['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare', 'job_contact', 'URL', 'match_skills'] + App.config["job_skills"]])
+            App.data_np = np.array([['company', 'position', 'area', 'salary', 'description', 'experience', 'require_major', 'welfare', 'contact', 'URL', 'match_skills'] + App.config["job_skills"]])
         else:
-            App.data_np = np.array([['company', 'job_name', 'job_area', 'job_salary', 'job_content', 'job_exp', 'job_require_major', 'job_welfare', 'job_contact', 'URL']])
+            App.data_np = np.array([['company', 'position', 'area', 'alary', 'description', 'experience', 'require_major', 'welfare', 'contact', 'URL']])
     except:
         traceback.print_exc()
         return "data input occurs error"

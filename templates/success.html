@@ -8,41 +8,34 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
 
         table {
             border-collapse: collapse;
-            height: 90%;
-            width: 90%;
+            height: 100%;
+            /* width: 100%; */
+            /* min-width: 1400px;
+            max-width: 1800px;  */
+            align-items: left;
+            overflow-x: scroll;
+            overflow-y: scroll;
             table-layout: fixed;
             text-align: center;
             margin: auto;
         }
 
-        th, td {
+        tr, td {
             border: 1px solid black;
             padding: 8px;
+            font-size: 12px;
             text-align: center;
-            height: 20px;
-            width: 30px;
-        }
-
-        td {
-            overflow: auto;
-        }
-
-        tbody {
-            display: block;
-            height: 600px;
-            overflow-y: scroll;
-        }
-
-        thead {
-            position: sticky;
-            top: 0;
-            background-color: white;
-            z-index: 1;
+            height: 16px;
+            min-width: 20px;
+            max-width: 80px; 
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            word-break: keep-all;
         }
 
         h2,p {
@@ -54,27 +47,27 @@
     <div>
         <h2>Output Table</h2>
         <p>Downloaded the output file at output/output_104.xlsx & output_104.csv</p>
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        {% for column_name in column_names %}
-                            <th>{{ column_name }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in numpy_array %}
-                        <tr>
-                            {% for item in row %}
-                                <td title="{{ item }}">{{ item }}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div id="array-table">
+            output table
         </div>
     </div>
-    
+    <script>
+        var arrayData = {{ np_tolist | tojson | safe }};
+        var table = "<table border='1'>";
+        for (var i = 0; i < arrayData.length; i++) {
+            table += '<tr';
+            if (i === 0) {
+                table += ' style="background-color: #FAFAFA; font-weight: bold;"';
+            }
+            table += '>';
+            for (var j = 0; j < arrayData[i].length; j++) {
+                console.log(i,j,arrayData[i][j])
+                table += '<td>' + arrayData[i][j] + "</td>";
+            }
+            table += "</tr>";
+        }
+        table += "</table>";
+        document.getElementById("array-table").innerHTML = table;
+    </script>
 </body>
 </html>
